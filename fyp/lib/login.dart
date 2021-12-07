@@ -19,6 +19,36 @@ class _LoginState extends State<Login> {
   final employeePin = TextEditingController();
   final FocusNode buttonfocus = FocusNode();
 
+  void checkStatus(String s) async {
+    bool status = false;
+    var ref = FirebaseDatabase.instance.reference().child("users/student");
+    await ref.once().then((value) {
+      if (value.value[s.toUpperCase().toString()].toString() == '0') {
+        status = true;
+        print(status);
+      } else if (value.value[s.toUpperCase().toString()].toString() == '1') {
+        print("Value is 1");
+      } else {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: Icon(
+                    Icons.error_outline_rounded,
+                    size: 50,
+                    color: Colors.red,
+                  ),
+                  actions: const [
+                    Center(
+                      child: Text("User Not Found",
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ));
+      }
+    });
+  }
+
   Future<void> signin(String email, String password) async {
     // ignore: unused_local_variable
     String usertype = "";
@@ -121,7 +151,8 @@ class _LoginState extends State<Login> {
       body: SingleChildScrollView(
         padding: EdgeInsets.only(top: 150, left: 30, right: 30.0),
         child: Card(
-          elevation: 7,
+          color: Colors.grey[100],
+          elevation: 15,
           // color: Color.fromRGBO(32, 26, 92, 1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
@@ -154,23 +185,23 @@ class _LoginState extends State<Login> {
                         keyboardType: TextInputType.emailAddress,
                         validator: (str) {
                           if (str!.isEmpty) {
-                            return "Email is required";
+                            return "SSN is required";
                           } else {
                             bool emailValid = RegExp(
-                                    r"^[A-za-z]+[@](cuivehari|ciitvehari).edu.pk$")
+                                    r"^(FA|SP)[0-9][0-9]-(BCS|MCS|BSE)-[0-9][0-9][0-9]$")
                                 .hasMatch(str);
                             if (!emailValid) {
-                              return "Invalid Email Pattern";
+                              return "Invalid SSN Pattern";
                             }
                           }
                         },
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Email Address',
+                          labelText: 'Enter SSN',
                         ),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 20,
                       ),
                       TextFormField(
                         autofocus: false,
@@ -273,19 +304,21 @@ class _LoginState extends State<Login> {
                     var abc = _formKey.currentState;
 
                     if (abc!.validate()) {
-                      showDialog(
-                          barrierDismissible: false,
-                          useSafeArea: true,
-                          context: context,
-                          builder: (context) {
-                            return WillPopScope(
-                              onWillPop: _onBackPressed,
-                              child: Center(child: CircularProgressIndicator()),
-                            );
-                          });
+                      checkStatus(employeeId.text.toString());
+                      // showDialog(
+                      //   barrierDismissible: false,
+                      //   useSafeArea: true,
+                      //   context: context,
+                      //   builder: (context) {
+                      //     return WillPopScope(
+                      //       onWillPop: _onBackPressed,
+                      //       child: Center(child: CircularProgressIndicator()),
+                      //     );
+                      //   },
+                      // );
 
-                      await signin(employeeId.text.toString(),
-                          employeePin.text.toString());
+                      // await signin(employeeId.text.toString(),
+                      //     employeePin.text.toString());
                     } else {
                       Connection.conectivityDialog(context);
                       Navigator.pop(context);
