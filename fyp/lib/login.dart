@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'connection.dart';
+import 'email.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -20,13 +21,13 @@ class _LoginState extends State<Login> {
   final FocusNode buttonfocus = FocusNode();
 
   void checkStatus(String s) async {
-    bool status = false;
     var ref = FirebaseDatabase.instance.reference().child("users/student");
     await ref.once().then((value) {
-      if (value.value[s.toUpperCase().toString()].toString() == '0') {
-        status = true;
-        print(status);
-      } else if (value.value[s.toUpperCase().toString()].toString() == '1') {
+      if (value.value[s.toUpperCase().toString()]["status"].toString() == '0') {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => Email(employeeId.text)));
+      } else if (value.value[s.toUpperCase().toString()]["status"].toString() ==
+          '1') {
         print("Value is 1");
       } else {
         showDialog(

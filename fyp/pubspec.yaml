@@ -37,7 +37,7 @@ dependencies:
   firebase_core:
   firebase_database:
   firebase_auth:
-  email_auth:
+  mailer: 
 
 dev_dependencies:
   flutter_test:
