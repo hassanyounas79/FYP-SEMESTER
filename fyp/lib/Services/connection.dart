@@ -14,6 +14,7 @@ class Connection {
   }
 
   static void conectivityDialog(BuildContext context) {
+    Navigator.pop(context);
     showDialog(
         context: context,
         builder: (context) {

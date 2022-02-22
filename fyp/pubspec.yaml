@@ -38,6 +38,9 @@ dependencies:
   firebase_database:
   firebase_auth:
   mailer: 
+  excel: ^1.1.5
+  file_picker:
+  fluttertoast: ^8.0.8
 
 dev_dependencies:
   flutter_test:
